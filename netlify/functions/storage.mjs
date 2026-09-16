@@ -1,7 +1,7 @@
 import { getStore } from "@netlify/blobs";
 
 export async function handler(event) {
-  const store = getStore("sbcr-piutang-embalase", { consistency: "strong" });
+  const store = getStore("sbcr-piutang-embalase");
 
   if (event.httpMethod === "GET") {
     const data = await store.get("dashboard_data", { type: "json" });
