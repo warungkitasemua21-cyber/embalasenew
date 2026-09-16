@@ -15,22 +15,6 @@ function readBook(buf){
 }
 
 function App(){
- const [isLogin,setIsLogin]=React.useState(false);
- const [loginUser,setLoginUser]=React.useState("");
- const [loginPass,setLoginPass]=React.useState("");
-
- if(!isLogin){
-   return <div className="login-box">
-    <h1>Dashboard Piutang Embalase</h1>
-    <input placeholder="Username" value={loginUser} onChange={e=>setLoginUser(e.target.value)}/>
-    <input placeholder="Password" type="password" value={loginPass} onChange={e=>setLoginPass(e.target.value)}/>
-    <button onClick={()=>{
-      if(loginUser==="admin" && loginPass==="admin123") setIsLogin(true);
-      else alert("Username atau password salah");
-    }}>Masuk</button>
-   </div>
- }
-
  const [book,setBook]=useState({});
  const [agen,setAgen]=useState("");
  const [depo,setDepo]=useState("");
@@ -39,6 +23,9 @@ function App(){
  const [history,setHistory]=useState(()=>JSON.parse(localStorage.getItem("embalase_history")||"[]"));
  const [note,setNote]=useState("");
  const [selectedAgent,setSelectedAgent]=useState("");
+ const [isLogin,setIsLogin]=useState(false);
+ const [loginUser,setLoginUser]=useState("");
+ const [loginPass,setLoginPass]=useState("");
  const [agentHistory,setAgentHistory]=useState({});
 
  useEffect(()=>{
@@ -73,6 +60,21 @@ function App(){
  const saveHistory=()=>{
    const h=[...history,{tanggal:new Date().toLocaleString("id-ID"),catatan:note}];
    setHistory(h);localStorage.setItem("embalase_history",JSON.stringify(h));setNote("");
+ }
+
+ if(!isLogin){
+   return <div className="login-box">
+    <h1>Dashboard Piutang Embalase</h1>
+    <input placeholder="Username" value={loginUser} onChange={e=>setLoginUser(e.target.value)}/>
+    <input placeholder="Password" type="password" value={loginPass} onChange={e=>setLoginPass(e.target.value)}/>
+    <button onClick={()=>{
+      if(loginUser==="admin" && loginPass==="admin123"){
+        setIsLogin(true);
+      } else {
+        alert("Username atau password salah");
+      }
+    }}>Masuk</button>
+   </div>
  }
 
  const resume=book["Resume Agen"]||[];
