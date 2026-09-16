@@ -26,20 +26,29 @@ function App(){
  const [agentHistory,setAgentHistory]=useState({});
 
  useEffect(()=>{
- fetch("/.netlify/functions/storage").then(r=>r.json()).then(async r=>{
-   if(r.data){setBook(r.data)}
-   else {
-    const b=await fetch("/default.xlsx").then(x=>x.arrayBuffer());
-    const d=readBook(b); setBook(d);
-    fetch("/.netlify/functions/storage",{method:"POST",body:JSON.stringify({data:d,history:{}})});
+ fetch("/.netlify/functions/storage")
+ .then(r=>r.json())
+ .then(async r=>{
+   if(r.data && Object.keys(r.data).length>0){
+      setBook(r.data);
+   } else {
+      const b=await fetch("/default.xlsx").then(x=>x.arrayBuffer());
+      const d=readBook(b);
+      setBook(d);
+      await fetch("/.netlify/functions/storage",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({data:d})
+      });
    }
    setAgentHistory(r.history||{});
- });
+ })
+ .catch(()=>console.log("Storage belum tersedia"));
 },[]);
 
  const upload=e=>{
    let r=new FileReader();
-   r.onload=x=>{let d=readBook(x.target.result);setBook(d);fetch("/.netlify/functions/storage",{method:"POST",body:JSON.stringify({data:d,history:agentHistory})});};
+   r.onload=x=>{let d=readBook(x.target.result);setBook(d);fetch("/.netlify/functions/storage",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({data:d,history:agentHistory})});};
    r.readAsArrayBuffer(e.target.files[0])
  }
 
