@@ -1,0 +1,14 @@
+{
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build"
+  },
+  "dependencies": {
+    "vite": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "xlsx": "latest",
+    "recharts": "latest",
+    "@netlify/blobs": "latest"
+  }
+}
