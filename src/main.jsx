@@ -20,7 +20,7 @@ function App(){
  const [depo,setDepo]=useState("");
  const [search,setSearch]=useState("");
  const [tab,setTab]=useState("Resume Agen");
- const [history,setHistory]=useState(()=>JSON.parse(localStorage.getItem("embalase_history")||"[]"));
+ const [history,setHistory]=useState([]);
  const [note,setNote]=useState("");
  const [selectedAgent,setSelectedAgent]=useState("");
  const [isLogin,setIsLogin]=useState(false);
@@ -51,15 +51,29 @@ function App(){
 
  const upload=e=>{
    let r=new FileReader();
-   r.onload=x=>{let d=readBook(x.target.result);setBook(d);fetch("/.netlify/functions/storage",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({data:d,history:agentHistory})});};
+   r.onload=x=>{let d=readBook(x.target.result);setBook(d);alert("Data berhasil disimpan ke server");fetch("/.netlify/functions/storage",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({data:d,history:agentHistory})});};
    r.readAsArrayBuffer(e.target.files[0])
  }
 
  const exportPDF=()=>window.print();
 
  const saveHistory=()=>{
-   const h=[...history,{tanggal:new Date().toLocaleString("id-ID"),catatan:note}];
-   setHistory(h);localStorage.setItem("embalase_history",JSON.stringify(h));setNote("");
+   if(!selectedAgent || !note) return;
+   const h={...agentHistory};
+   h[selectedAgent]=[
+     ...(h[selectedAgent]||[]),
+     {
+       tanggal:new Date().toLocaleString("id-ID"),
+       catatan:note
+     }
+   ];
+   setAgentHistory(h);
+   fetch("/.netlify/functions/storage",{
+     method:"POST",
+     headers:{"Content-Type":"application/json"},
+     body:JSON.stringify({history:h})
+   });
+   setNote("");
  }
 
  if(!isLogin){
