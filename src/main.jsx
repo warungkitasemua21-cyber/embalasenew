@@ -15,6 +15,22 @@ function readBook(buf){
 }
 
 function App(){
+ const [isLogin,setIsLogin]=React.useState(false);
+ const [loginUser,setLoginUser]=React.useState("");
+ const [loginPass,setLoginPass]=React.useState("");
+
+ if(!isLogin){
+   return <div className="login-box">
+    <h1>Dashboard Piutang Embalase</h1>
+    <input placeholder="Username" value={loginUser} onChange={e=>setLoginUser(e.target.value)}/>
+    <input placeholder="Password" type="password" value={loginPass} onChange={e=>setLoginPass(e.target.value)}/>
+    <button onClick={()=>{
+      if(loginUser==="admin" && loginPass==="admin123") setIsLogin(true);
+      else alert("Username atau password salah");
+    }}>Masuk</button>
+   </div>
+ }
+
  const [book,setBook]=useState({});
  const [agen,setAgen]=useState("");
  const [depo,setDepo]=useState("");
